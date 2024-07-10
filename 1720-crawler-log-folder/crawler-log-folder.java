@@ -8,7 +8,7 @@ class Solution {
                 }
             }
             else if(log.equals("./")){
-                depth += 0;
+                continue;
             }
             else{
                 depth += 1;
