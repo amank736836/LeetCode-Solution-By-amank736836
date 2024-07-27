@@ -1,45 +1,60 @@
 class Solution {
     public long minimumCost(String source, String target, char[] original, char[] changed, int[] cost) {
-        int n = original.length;
-        int m = source.length();
+        List<int[]> adj[] = new ArrayList[26];
+        long minCost = 0;
+        HashMap<Pair<Character,Character>,Long> memo = new HashMap<>();
 
-        long dp[][] = new long[26][26];
-        for (int i = 0; i < 26; i++) {
-            for (int j = 0; j < 26; j++) {
-                dp[i][j] = Long.MAX_VALUE;
+        for(int i=0;i<26;i++){
+            adj[i] = new ArrayList<>();
+        }
+
+        for(int i=0;i<original.length;i++){
+            adj[original[i] - 'a'].add(new int[]{changed[i] - 'a' , cost[i]});
+        }
+
+        for(int i=0;i<source.length();i++){
+            Pair key = new Pair(source.charAt(i),target.charAt(i));
+            if(memo.containsKey(key)){
+                minCost += memo.get(key);
+                continue;
             }
-        }
 
-        for (int i = 0; i < 26; i++) {
-            dp[i][i] = 0;
-        }
+            boolean converted = false;
+            boolean seen[] = new boolean[26];
+            long charCost = 0;
+            Queue<int[]> queue = new PriorityQueue<>((a,b) -> a[1]-b[1]);
+            queue.offer(new int[]{source.charAt(i)-'a',0});
 
-        for (int i = 0; i < n; i++) {
-            dp[original[i] - 'a'][changed[i] - 'a'] = Math.min(dp[original[i] - 'a'][changed[i] - 'a'], (long) cost[i]);
-        }
+            while(!queue.isEmpty()){
+                int a[] = queue.poll();
+                int c = a[0];
+                int costSoFar = a[1];
 
-        for (int via = 0; via < 26; via++) {
-            for (int i = 0; i < 26; i++) {
-                if (dp[i][via] != Long.MAX_VALUE) {
-                    for(int j=0;j<26;j++){
-                        if(dp[via][j] != Long.MAX_VALUE){
-                            dp[i][j] = Math.min(dp[i][j] , dp[i][via] + dp[via][j]);
-                        }
+                if((char) (c + 'a') == target.charAt(i)){
+                    charCost += costSoFar;
+                    converted = true;
+                    break;
+                }
+                if(seen[c]){
+                    continue;
+                }
+                seen[c] = true;
+                for(int neighbour[] : adj[c]){
+                    if(!seen[neighbour[0]]){
+                        queue.offer(new int[]{neighbour[0],costSoFar + neighbour[1]});
                     }
                 }
             }
-        }
 
-        long ans = 0;
-
-        for(int i=0;i<m;i++){
-            if(dp[source.charAt(i)-'a'][target.charAt(i)-'a'] == Long.MAX_VALUE){
+            if(!converted){
                 return -1;
             }
-            ans += dp[source.charAt(i)-'a'][target.charAt(i)-'a'];
+            minCost += charCost;
+            memo.put(key,charCost);
+
         }
 
-        return ans;
 
+        return minCost;
     }
 }
