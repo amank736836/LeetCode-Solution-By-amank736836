@@ -11,14 +11,14 @@ class Solution {
         int visited[] = new int[n+1];
         int timeArr[] = new int[n+1];
 
-        deque.offerLast(new int[]{1,0});
+        deque.offer(new int[]{1,0});
         Arrays.fill(timeArr,-1);
         timeArr[0] = 0;
 
         while(deque.size() > 0){
             int curSize = deque.size();
             for(int i=0;i<curSize;i++){
-                int cur[] = deque.pollFirst();
+                int cur[] = deque.poll();
                 int nextTime = 0;
                 int curLight = cur[1] / change;
                 if(curLight % 2 == 0){
@@ -29,7 +29,7 @@ class Solution {
 
                 for(int nextNode : graph[cur[0]]){
                     if(visited[nextNode] < 2 && timeArr[nextNode] < nextTime){
-                        deque.offerLast(new int[]{nextNode,nextTime});
+                        deque.offer(new int[]{nextNode,nextTime});
                         visited[nextNode]++;
                         timeArr[nextNode] = nextTime;
                         if(nextNode == n && visited[nextNode] == 2){
