@@ -1,34 +1,33 @@
 class Solution {
     public int numTeams(int[] rating) {
-        if (rating == null || rating.length == 0) {
-            return 0;
-        }
-
-        int len = rating.length;
-        int dp[] = new int[len];
+        int n = rating.length;
         int count = 0;
 
-        for (int i = 0; i < len; i++) {
-            for (int j = i; j >= 0; j--) {
-                if (rating[i] > rating[j]) {
-                    dp[i]++;
-                    count = count + dp[j];
+        for (int i = 0; i < n; i++) {
+            int left_smaller = 0;
+            int right_greater = 0;
+            int left_greater = 0;
+            int right_smaller = 0;
+            for (int j = 0; j < i; j++) {
+                if (rating[j] < rating[i]) {
+                    left_smaller++;
+                }
+                if (rating[j] > rating[i]) {
+                    left_greater++;
                 }
             }
-        }
-
-        dp = new int[len];
-
-        for (int i = 0; i < len; i++) {
-            for (int j = i; j >= 0; j--) {
-                if (rating[i] < rating[j]) {
-                    dp[i]++;
-                    count = count + dp[j];
+            for (int k = i + 1; k < n; k++) {
+                if (rating[k] > rating[i]) {
+                    right_greater++;
+                }
+                if (rating[k] < rating[i]) {
+                    right_smaller++;
                 }
             }
-        }
 
+            count += left_smaller * right_greater;
+            count += left_greater * right_smaller;
+        }
         return count;
-
     }
 }
