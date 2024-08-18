@@ -1,21 +1,22 @@
 class Solution {
     public int nthUglyNumber(int n) {
-        int primes[] = {2,3,5};
-        PriorityQueue<Long> uglyHeap = new PriorityQueue<>();
-        HashSet<Long> visited = new HashSet<>();
-        uglyHeap.add(1L);
-        visited.add(1L);
-        long curr = 1L;
-        for(int i=0;i<n;i++){
-            curr = uglyHeap.poll();
-            for(int prime : primes){
-                long newUgly = curr * prime;
-                if(!visited.contains(newUgly)){
-                    uglyHeap.add(newUgly);
-                    visited.add(newUgly);
-                }
+        int dp[] = new int[n];
+        dp[0] = 1;
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        for(int i=1;i<n;i++){
+            dp[i] = Math.min(dp[x] * 2 , Math.min(dp[y] * 3,dp[z] * 5));
+            if(dp[i] == 2 * dp[x]){
+                x++;
+            }
+            if(dp[i] == 3 * dp[y]){
+                y++;
+            }
+            if(dp[i] == 5 * dp[z]){
+                z++;
             }
         }
-        return (int)curr;
+        return dp[n-1];
     }
 }
