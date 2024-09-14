@@ -1,27 +1,23 @@
 class Solution {
     public int longestSubarray(int[] nums) {
-        int maxBitwiseAnd = Integer.MIN_VALUE;
-
-        for(int num : nums){
-            maxBitwiseAnd = Math.max(maxBitwiseAnd,num);
-        }
-        
-        int maxi = 1;
-        int count = 0;
-        int i = 0;
-        while(i < nums.length){
-            if(nums[i] == maxBitwiseAnd){
-                while(i < nums.length && nums[i++] == maxBitwiseAnd){
-                    count++;
-                }
-                maxi = Math.max(maxi,count);
-                count = 0;
+        int length = 0;
+        int maxL = 0;
+        int max = Integer.MIN_VALUE;
+        for(int n  :nums){
+            if(max < n){
+                max = n;
+                maxL = 1;
+                length = 1;
             }
-            else{
-                i++;
+            else if(max == n){
+                length++;
+            }else{
+                maxL = Math.max(length,maxL);
+                length = 0;
             }
         }
-        return maxi;
+        maxL = Math.max(length,maxL);
+        return maxL;
 
     }
 }
